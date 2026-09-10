@@ -50,6 +50,6 @@ jobs:
           cache: maven
       - name: Dependency vulnerability check
         working-directory: backend
-        run: mvn -B org.owasp:dependency-check-maven:check
+        run: mvn -B org.owasp:dependency-check-maven:check -DnvdApiKey="$NVD_API_KEY"
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
