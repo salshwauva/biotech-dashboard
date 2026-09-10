@@ -1,0 +1,38 @@
+# Java / Maven
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# Node / Vite
+node_modules/
+dist/
+.vite/
+
+# Environment
+.env
+.env.local
+*.env
+
+# Editors and OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# AI agent instructions, notes, and tooling. Kept out of version control.
+robots.md
+03biotechdashboardjava-revised.md
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.claude/
+.cursor/
+.cursorrules
+.windsurfrules
+.continue/
+.aider*
+.antigravity/
+.github/copilot-instructions.md
+ai-notes/
+*.ai.md

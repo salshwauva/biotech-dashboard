@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: biotech-dashboard
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/biotech}
+    username: ${SPRING_DATASOURCE_USERNAME:biotech}
+    password: ${SPRING_DATASOURCE_PASSWORD:biotech}
+  jpa:
+    # Flyway owns the schema. Never switch this to create or update.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+clinicaltrials:
+  base-url: ${CLINICALTRIALS_BASE_URL:https://clinicaltrials.gov/api/v2}
+  connect-timeout: 5s
+  read-timeout: 15s
+  max-retries: 3
+  page-size: 100
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
