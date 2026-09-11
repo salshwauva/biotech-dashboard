@@ -43,13 +43,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-          cache: maven
       - name: Dependency vulnerability check
-        working-directory: backend
-        run: mvn -B org.owasp:dependency-check-maven:check -DnvdApiKey="$NVD_API_KEY"
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'

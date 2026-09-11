@@ -104,7 +104,6 @@
         </dependencies>
     </dependencyManagement>
 
-
     <build>
         <plugins>
             <plugin>
@@ -120,17 +119,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>10.0.4</version>
-                <configuration>
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
-                    <suppressionFiles>
-                        <suppressionFile>dependency-check-suppressions.xml</suppressionFile>
-                    </suppressionFiles>
-                </configuration>
             </plugin>
         </plugins>
     </build>
