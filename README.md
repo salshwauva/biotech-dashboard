@@ -1,60 +1,75 @@
-# Open Data Biotech Dashboard
+# Biotech Dashboard
 
-Spring Boot service that ingests ClinicalTrials.gov API v2 oncology studies, keeps immutable source
-snapshots, normalizes validated records into PostgreSQL, and serves trial-disposition analytics to a
-React dashboard.
+Biotech Dashboard is a Java project for analysis of oncology trial status from ClinicalTrials.gov. The planned dashboard compares completion and early discontinuation across trial phases and sponsor types.
 
-Analytical question: how do oncology trial completion and early-discontinuation patterns differ by
-trial phase and sponsor type?
+The current code provides the service foundation. Trial imports, analytical endpoints, and the React dashboard are not implemented yet.
 
-Trial disposition is not clinical efficacy. `Completed` does not mean the intervention worked.
-`Terminated` and `Withdrawn` do not mean it failed.
+## Current scope
 
-## Status
+- A Spring Boot service with PostgreSQL configuration.
+- Flyway migrations, with a baseline migration for an empty database.
+- A public health endpoint and a route policy for a future read-only API.
+- Integration tests for database migrations and route access.
+- CI checks for the build, tests, secrets, and dependencies.
 
-PR 1 (foundation) in progress. See `docs/plan.md` for the increment sequence.
-
-## Layout
-
-| Path | Contents |
-| --- | --- |
-| `backend/` | Spring Boot service, Maven build, Flyway migrations |
-| `frontend/` | React + Vite dashboard (added in PR 6) |
-| `docs/` | Analytical definitions, security note, plan, metrics |
-| `.github/workflows/` | CI: build, tests, gitleaks, dependency check |
+The [implementation plan](docs/plan.md) defines the remaining increments. [Analytical definitions](docs/definitions.md) records the intended cohort and metrics.
 
 ## Run locally
 
-Requirements: JDK 21 or later, Maven, Docker.
+Requirements: JDK 21 or later, Maven, and Docker with Compose.
 
-1. Start PostgreSQL: `docker compose up -d`
-2. Run the service: `cd backend && mvn spring-boot:run`
-3. Check health: `curl localhost:8080/actuator/health`
+From the repository root, start PostgreSQL:
 
-## Run the tests
+```sh
+docker compose up -d
+```
 
-`cd backend && mvn test`
+Start the service in the same terminal:
 
-The tests start their own PostgreSQL container and apply the Flyway migrations to it. Docker Engine
-29 refuses the API version that Testcontainers asks for by default, so `backend/pom.xml` pins
-`api.version` to 1.44 for the test run.
+```sh
+cd backend
+mvn spring-boot:run
+```
 
-## Architecture
+From another terminal, check the health endpoint:
 
-TODO: diagram after PR 3.
+```sh
+curl http://localhost:8080/actuator/health
+```
 
-## Methodology and definitions
+The expected response is `{"status":"UP"}` after the database is ready. No dashboard or trial data endpoint is available in this version.
 
-See `docs/definitions.md`.
+## Configuration
 
-## Limitations
+The Compose file exposes PostgreSQL on `127.0.0.1:5432`. Its default database, username, and password are `biotech`, for local development.
 
-TODO.
+The service accepts `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD`. `CORS_ALLOWED_ORIGINS` controls the allowed browser origin.
 
-## Security posture
+The [security note](docs/security.md) describes the route policy and database exposure.
 
-See `docs/security.md`.
+## Tests
 
-## What I would do next
+With Docker active, run from the repository root:
 
-TODO.
+```sh
+cd backend
+mvn test
+```
+
+Testcontainers starts an isolated PostgreSQL container. The tests apply the Flyway migration and check the service's access rules.
+
+## Source map
+
+| Path | Purpose |
+| --- | --- |
+| `backend/` | Spring Boot service and Maven build |
+| `backend/src/main/resources/db/migration/` | Flyway migrations |
+| `backend/src/test/` | Integration tests |
+| `docker-compose.yml` | Local PostgreSQL instance |
+| `docs/` | Plan, analytical definitions, and security decisions |
+
+## Analytical limits
+
+Trial status does not establish clinical efficacy. A completed trial does not establish that its treatment worked. A terminated or withdrawn trial does not establish treatment failure.
+
+The project has no analytical results yet. The planned comparisons will depend on registry coverage, cohort definitions, and the dates of source snapshots.
